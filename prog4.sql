@@ -76,7 +76,7 @@ SELECT * FROM student;
 INSERT INTO semsec VALUES
 ('5B', 5, 'B'),
 ('3A', 3, 'A'),
-('4B', 4, 'B'),
+('8B', 8, 'B'),
 ('2A', 2, 'A'),
 ('1D', 1, 'D'),
 ('5A', 5, 'A');
@@ -87,7 +87,7 @@ INSERT INTO class VALUES
 ('01JST21IS002', '5B'),
 ('01JST21IS003', '5A'),
 ('01JST21CS001', '1D'),
-('01JST21EC001', '2A'),
+('01JST21EC001', '8B'),
 ('01JST21IS005', '5B');
 SELECT * FROM class;
 
@@ -95,7 +95,7 @@ INSERT INTO subject VALUES
 ('15IS411', 'DBMS', 5, 4),
 ('15IS34', 'CN', 5, 4),
 ('15IS456', 'SSC', 3, 4),
-('15IS23', 'JAVA', 2, 3),
+('15IS23', 'JAVA', 8, 3),
 ('15IS89', 'ML', 1, 1.5);
 SELECT * FROM subject;
 
@@ -103,26 +103,25 @@ INSERT INTO iamarks VALUES
 ('01JST21IS001', '15IS411', '5B', 19, 19, 19, 19),
 ('01JST21IS002', '15IS34', '5B', 18, 18, 17, 18),
 ('01JST21IS002', '15IS411', '5B', 16, 15, 17, 15),
-('01JST21EC001', '15IS23', '2A', 13, 11, 9, 10);
+('01JST21EC001', '15IS23', '8B', 13, 11, 9, 10);
 SELECT * FROM iamarks;
 
 -- Queries
 
 -- 1.
 SELECT s.*, ss.sem, ss.sec
-FROM student s, semsec ss, class c
-WHERE s.usn = c.usn
-AND ss.ssid = c.ssid
-AND ss.sem = 5
-AND ss.sec = 'B';
+FROM student s
+JOIN class c ON s.usn = c.usn
+JOIN semsec ss ON c.ssid = ss.ssid
+WHERE ss.sem = 5 AND ss.sec = 'B';
 
 -- 2.
-SELECT ss.sem, ss.sec, s.gender, COUNT(s.gender) AS count
-FROM student s, semsec ss, class c
-WHERE s.usn = c.usn
-AND ss.ssid = c.ssid
+SELECT ss.sem, ss.sec, s.gender, count(s.gender) AS total_students
+FROM semsec ss
+JOIN class c ON ss.ssid = c.ssid
+JOIN student s ON c.usn = s.usn
 GROUP BY ss.sem, ss.sec, s.gender
-ORDER BY sem;
+ORDER BY ss.sem;
 
 -- 3.
 CREATE VIEW student_test1_marks_view AS
@@ -148,8 +147,7 @@ SELECT s.usn, s.sname, s.gender, ss.sem, ss.sec,
         WHEN i.finalia < 12 THEN 'Weak'
     END AS cat
 FROM student s
-NATURAL JOIN class c
-NATURAL JOIN semsec ss
-NATURAL JOIN iamarks i
-WHERE ss.sem = 5
-AND ss.sec IN ('A', 'B', 'C');
+JOIN class c ON s.usn = c.usn
+JOIN semsec ss ON c.ssid = ss.ssid
+JOIN iamarks i ON s.usn = i.usn AND ss.ssid = i.ssid
+WHERE ss.sem = 8 AND ss.sec IN ('A', 'B', 'C');

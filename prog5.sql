@@ -68,7 +68,7 @@ INSERT INTO employee (ssn, name, address, sex, salary) VALUES
 ('ABC01','Ben Scott','Bengaluru','M',450000),
 ('ABC02','Harry Smith','Bengaluru','M',500000),
 ('ABC03','Lean Baker','Bengaluru','M',700000),
-('ABC04','Martin scott','Mysuru','M',500000),
+('ABC04','Martin Scott','Mysuru','M',500000),
 ('ABC05','Ravan Hegde','Manglore','M',650000),
 ('ABC06','Girish Hosur','Mysuru','M',450000),
 ('ABC07','Neela Sharma','Bengaluru','F',800000),

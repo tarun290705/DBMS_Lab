@@ -34,7 +34,7 @@ CREATE TABLE book (
 );
 
 CREATE TABLE book_authors (
-    book_id INT PRIMARY KEY,
+    book_id INT,
     author_name VARCHAR(10),
     FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE CASCADE
 );
@@ -112,10 +112,10 @@ SELECT * FROM book_lending;
 -- Queries
 
 -- 1.
-SELECT b.book_id, b.title, b.publisher_name, ba.author_name, bc.branch_id, bc.no_of_copies
+SELECT b.book_id, b.title, b.publisher_name, ba.author_name, bc.branch_name, bc.no_of_copies
 FROM book b
-NATURAL JOIN book_authors ba
-NATURAL JOIN book_copies bc;
+JOIN book_authors ba ON b.book_id = ba.book_id
+JOIN book_copies bc ON b.book_id = bc.book_id;
 
 -- 2. 
 SELECT card_no

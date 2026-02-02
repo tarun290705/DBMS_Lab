@@ -79,10 +79,11 @@ WHERE grade >
        WHERE city = 'BENGALURU');
 
 -- 2. 
-SELECT salesman_id, COUNT(customer_id) AS total_customers
-FROM customer
-GROUP BY salesman_id
-HAVING COUNT(customer_id) > 1;
+SELECT s.salesman_id, s.name, COUNT(c.customer_id)
+FROM salesman s 
+JOIN customer c ON s.salesman_id = c.salesman_id
+GROUP BY s.salesman_id, s.name
+HAVING COUNT(c.customer_id) > 1;
 
 -- 3. 
 SELECT s.salesman_id, s.name, s.city, 'HAS CUSTOMER' AS status

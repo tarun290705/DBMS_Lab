@@ -34,7 +34,7 @@ CREATE TABLE movies (
     mov_title VARCHAR(20),
     mov_year YEAR,
     mov_lang VARCHAR(20),
-    dir_id INT REFERENCES director(dir_id) ON DELETE CASCADE
+    FOREIGN KEY INT REFERENCES director(dir_id) ON DELETE CASCADE
 );
 
 CREATE TABLE movie_cast (
@@ -47,7 +47,7 @@ CREATE TABLE movie_cast (
 
 CREATE TABLE rating (
     mov_id INT,
-    rev_stars VARCHAR(25),
+    rev_stars INT,
     FOREIGN KEY (mov_id) REFERENCES movies(mov_id) ON DELETE CASCADE
 );
 
@@ -73,7 +73,7 @@ INSERT INTO movies VALUES
 (1001, 'INTERSTELLAR', 2017, 'ENGLISH', 201),
 (1002, 'SECRET AGENT', 2015, 'ENGLISH', 204),
 (1003, 'INCEPTION', 2008, 'ENGLISH', 201),
-(1004, 'JURASSIC PARK', 2011, 'ENGLISH', 202),
+(1004, 'JURASSIC PARK', 1998, 'ENGLISH', 202),
 (1005, 'SILENCE', 2012, 'ENGLISH', 205);
 SELECT * FROM movies;
 
@@ -107,21 +107,20 @@ WHERE dir_id = (
 -- 2. 
 SELECT m.mov_title
 FROM movies m
-NATURAL JOIN movie_cast mc
-WHERE act_id IN (
+JOIN movie_cast mc ON m.mov_id = mc.mov_id
+WHERE mc.act_id IN (
     SELECT act_id
     FROM movie_cast
     GROUP BY act_id
-    HAVING COUNT(act_id) > 1
-)
-GROUP BY mov_title
-HAVING COUNT(*) > 1;
+    HAVING COUNT(mov_id) >= 2
+);
 
 -- 3. 
-SELECT DISTINCT act_name
-FROM (actor JOIN movie_cast USING(act_id))
-JOIN movies USING(mov_id)
-WHERE mov_year NOT BETWEEN 2000 AND 2015;
+SELECT DISTINCT a.act_name
+FROM actor 
+JOIN movie_cast mc ON a.act_id = mc.act_id
+JOIN movies m ON mc.Mov_id = m.mov_id
+WHERE mov_year NOT BETWEEN 2000 AND 2020;
 
 -- 4.
 SELECT mov_title, MAX(rev_stars)
