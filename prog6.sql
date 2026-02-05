@@ -8,8 +8,8 @@
 -- Demonstrate the query against this table be optimized by partitioning its primary index using partitioning techniques.
 
 -- Create Database
-CREATE DATABASE call;
-USE call;
+CREATE DATABASE calls;
+USE calls;
 
 -- Create Table
 CREATE TABLE call_detail (
@@ -23,11 +23,6 @@ PARTITION BY RANGE (UNIX_TIMESTAMP(call_start)) (
     PARTITION p0 VALUES LESS THAN (UNIX_TIMESTAMP('2025-01-22 00:00:00')),
     PARTITION p1 VALUES LESS THAN (UNIX_TIMESTAMP('2025-01-23 00:00:00'))
 );
-
-CREATE INDEX idx
-ON call_detail (phone_number, call_start);
-
-SHOW INDEX FROM call_detail;
 
 -- Insert Values
 INSERT INTO call_detail VALUES

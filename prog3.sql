@@ -18,29 +18,30 @@ USE movie;
 -- Create Tables
 
 CREATE TABLE actor (
-    act_id INT NOT NULL PRIMARY KEY,
+    act_id INT PRIMARY KEY,
     act_name VARCHAR(20),
-    act_gender CHAR(1)
+    act_gender CHAR
 );
 
 CREATE TABLE director (
-    dir_id INT NOT NULL PRIMARY KEY,
+    dir_id INT PRIMARY KEY,
     dir_name VARCHAR(20),
-    dir_phone VARCHAR(20)
+    dir_phone VARCHAR(10)
 );
 
 CREATE TABLE movies (
-    mov_id INT NOT NULL PRIMARY KEY,
+    mov_id INT PRIMARY KEY,
     mov_title VARCHAR(20),
     mov_year YEAR,
-    mov_lang VARCHAR(20),
-    FOREIGN KEY INT REFERENCES director(dir_id) ON DELETE CASCADE
+    mov_lang VARCHAR(10),
+    dir_id INT,
+    FOREIGN KEY (dir_id) REFERENCES director(dir_id) ON DELETE CASCADE
 );
 
 CREATE TABLE movie_cast (
     act_id INT,
     mov_id INT,
-    role VARCHAR(20),
+    role VARCHAR(10),
     FOREIGN KEY (act_id) REFERENCES actor(act_id) ON DELETE CASCADE,
     FOREIGN KEY (mov_id) REFERENCES movies(mov_id) ON DELETE CASCADE
 );
@@ -54,43 +55,43 @@ CREATE TABLE rating (
 -- Insert Values
 
 INSERT INTO actor VALUES
-(101, 'RAHUL', 'M'),
-(102, 'ANKITHA', 'F'),
-(103, 'RADHIKA', 'F'),
-(104, 'CHETHAN', 'M'),
-(105, 'VIVAN', 'M');
+(101, 'Rahul', 'M'),
+(102, 'Ankitha', 'F'),
+(103, 'Radhika', 'F'),
+(104, 'Chethan', 'M'),
+(105, 'Vivan', 'M');
 SELECT * FROM actor;
 
 INSERT INTO director VALUES
-(201, 'CHRISTOPHER NOLAN', '918181818'),
-(202, 'HITCHCOCK', '918181812'),
-(203, 'JAMES CAMERON', '918181813'),
-(204, 'STEVEN SPIELBERG', '918181814'),
-(205, 'MARTIN SEORSESE', '918181815');
+(201, 'Chris', '918181818'),
+(202, 'Hitchcock', '918181812'),
+(203, 'James', '918181813'),
+(204, 'Steven Spielberg', '918181814'),
+(205, 'Martin', '918181815');
 SELECT * FROM director;
 
 INSERT INTO movies VALUES
-(1001, 'INTERSTELLAR', 2017, 'ENGLISH', 201),
-(1002, 'SECRET AGENT', 2015, 'ENGLISH', 204),
-(1003, 'INCEPTION', 2008, 'ENGLISH', 201),
-(1004, 'JURASSIC PARK', 1998, 'ENGLISH', 202),
-(1005, 'SILENCE', 2012, 'ENGLISH', 205);
+(301, 'Intersteller', 2017, 'English', 201),
+(302, 'Secret Agent', 2015, 'English', 204),
+(303, 'Inception', 2008, 'English', 201),
+(304, 'Jurassic Park', 1998, 'English', 202),
+(305, 'Silence', 2012, 'English', 205);
 SELECT * FROM movies;
 
 INSERT INTO movie_cast VALUES
-(101, 1002, 'HERO'),
-(101, 1001, 'HERO'),
-(103, 1003, 'HEROINE'),
-(103, 1002, 'GUEST'),
-(104, 1004, 'HERO');
+(101, 302, 'Hero'),
+(101, 301, 'Hero'),
+(103, 303, 'Heroine'),
+(103, 302, 'Guest'),
+(104, 304, 'Hero');
 SELECT * FROM movie_cast;
 
 INSERT INTO rating VALUES
-(1001, 4),
-(1002, 2),
-(1003, 5),
-(1004, 4),
-(1005, 3);
+(301, 4),
+(302, 2),
+(303, 5),
+(304, 4),
+(305, 3);
 SELECT * FROM rating;
 
 -- Queries
@@ -101,7 +102,7 @@ FROM movies
 WHERE dir_id = (
     SELECT dir_id
     FROM director
-    WHERE dir_name = 'HITCHCOCK'
+    WHERE dir_name = 'Hitchcock'
 );
 
 -- 2. 
@@ -113,18 +114,21 @@ WHERE mc.act_id IN (
     FROM movie_cast
     GROUP BY act_id
     HAVING COUNT(mov_id) >= 2
-);
+)
+GROUP BY m.mov_title;
 
 -- 3. 
-SELECT DISTINCT a.act_name
-FROM actor 
+SELECT a.act_id, a.act_name
+FROM actor a
 JOIN movie_cast mc ON a.act_id = mc.act_id
 JOIN movies m ON mc.Mov_id = m.mov_id
-WHERE mov_year NOT BETWEEN 2000 AND 2020;
+WHERE mov_year NOT BETWEEN 2000 AND 2020
+GROUP BY a.act_id, a.act_name;
 
 -- 4.
-SELECT mov_title, MAX(rev_stars)
-FROM movies NATURAL JOIN rating
+SELECT m.mov_title, MAX(r.rev_stars) AS max_rating
+FROM movies m
+JOIN rating r ON m.mov_id = r.mov_id
 GROUP BY mov_title
 ORDER BY mov_title;
 
@@ -134,8 +138,7 @@ SET rev_stars = 5
 WHERE mov_id IN (
     SELECT mov_id
     FROM director NATURAL JOIN movies
-    WHERE dir_name = 'STEVEN SPIELBERG'
+    WHERE dir_name = 'Steven Spielberg'
 );
 
-SELECT * FROM rating
-ORDER BY mov_id;
+SELECT * FROM rating;

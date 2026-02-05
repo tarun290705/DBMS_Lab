@@ -66,53 +66,53 @@ CREATE TABLE book_lending (
 -- Insert Values
 
 INSERT INTO publisher VALUES
-('A', 'BENGALURU', '9879879879'),
-('B', 'BENGALURU', '8798798791'),
-('C', 'MYSURU', '7897897892');
+('Rahul', 'Bengaluru', '9879879879'),
+('Rohan', 'Bengaluru', '8798798791'),
+('Rishi', 'Mysuru', '7897897892');
 SELECT * FROM publisher;
 
 INSERT INTO book VALUES
-(1, 'DSA', 'A', 1998),
-(2, 'ADA', 'A', 2000),
-(3, 'DBMS', 'B', 2005),
-(4, 'SE', 'C', 2005);
+(101, 'DSA', 'Rahul', 1998),
+(102, 'ADA', 'Rahul', 2000),
+(103, 'DBMS', 'Rohan', 2005),
+(104, 'SE', 'Rishi', 2005);
 SELECT * FROM book;
 
 INSERT INTO book_authors VALUES
-(1, 'AB'),
-(2, 'CD'),
-(3, 'EF'),
-(4, 'GH');
+(101, 'Neha'),
+(102, 'Adya'),
+(103, 'Abhilash'),
+(104, 'Harsh');
 SELECT * FROM book_authors;
 
 INSERT INTO library_branch VALUES
-(11, 'LIB1', 'MYSURU'),
-(22, 'LIB2', 'MYSURU'),
-(33, 'LIB3', 'BENGALURU'),
-(44, 'LIB4', 'MANGALURU');
+(201, 'LIB1', 'MYSURU'),
+(202, 'LIB2', 'MYSURU'),
+(203, 'LIB3', 'BENGALURU'),
+(204, 'LIB4', 'MANGALURU');
 SELECT * FROM library_branch;
 
 INSERT INTO book_copies VALUES
-(1, 11, 10),
-(1, 22, 20),
-(2, 22, 30),
-(3, 33, 40),
-(4, 44, 25),
-(4, 33, 15);
+(101, 201, 10),
+(101, 202, 20),
+(102, 202, 30),
+(103, 203, 40),
+(104, 204, 25),
+(104, 103, 15);
 SELECT * FROM book_copies;
 
 INSERT INTO book_lending VALUES
-(1, 11, 1010, '2020-01-02', '2020-02-01'),
-(2, 22, 1010, '2020-03-01', '2020-04-01'),
-(3, 33, 1010, '2021-02-02', '2021-03-02'),
-(4, 44, 1010, '2022-01-02', '2022-02-01'),
-(1, 22, 1012, '2020-01-02', '2020-02-01');
+(101, 201, 1010, '2020-01-02', '2020-02-01'),
+(102, 202, 1010, '2020-03-01', '2020-04-01'),
+(103, 203, 1010, '2021-02-02', '2021-03-02'),
+(104, 204, 1010, '2022-01-02', '2022-02-01'),
+(101, 202, 1012, '2020-01-02', '2020-02-01');
 SELECT * FROM book_lending;
 
 -- Queries
 
 -- 1.
-SELECT b.book_id, b.title, b.publisher_name, ba.author_name, bc.branch_name, bc.no_of_copies
+SELECT b.book_id, b.title, b.publisher_name, ba.author_name, bc.branch_id, bc.no_of_copies
 FROM book b
 JOIN book_authors ba ON b.book_id = ba.book_id
 JOIN book_copies bc ON b.book_id = bc.book_id;
@@ -126,11 +126,13 @@ HAVING COUNT(*) > 3;
 
 -- 3. 
 DELETE FROM book
-WHERE book_id = 1;
+WHERE book_id = 101;
+SELECT * FROM book;
 
-UPDATE book
-SET publisher_name = 'B'
-WHERE book_id = 2;
+UPDATE book_authors
+SET author_name = 'Samarth'
+WHERE book_id = 102;
+SELECT * FROM book_authors;
 
 -- 4. 
 CREATE VIEW publication_year AS
@@ -142,16 +144,16 @@ SELECT * FROM publication_year;
 
 -- 5. 
 CREATE VIEW available_books AS
-SELECT b.book_id, b.title, lb.branch_id, bc.no_of_copies
+SELECT b.book_id, b.title, bc.branch_id, bc.no_of_copies
 FROM book b
-NATURAL JOIN book_copies bc
-NATURAL JOIN library_branch lb;
+JOIN book_copies bc ON b.book_id = bc.book_id;
 
 SELECT * FROM available_books;
 
 -- 6.
-CREATE VIEW library_book AS
-SELECT book_id, title, pub_year
-FROM book;
+CREATE VIEW branch_details AS
+SELECT branch_id, branch_name, address
+FROM library_branch
+WHERE address = 'Mysuru';
 
-SELECT * FROM library_book;
+SELECT * FROM branch_details;
